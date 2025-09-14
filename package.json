@@ -1,0 +1,28 @@
+{
+  "name": "will-it-miss",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build src/index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^9.35.0",
+    "eslint-plugin-react": "^7.37.5",
+    "parcel": "^2.15.4",
+    "postcss": "^8.5.6",
+    "postcss-preset-env": "^10.3.1",
+    "prettier": "^3.6.2"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "format-number": "^3.0.0",
+    "react": "^19.1.1",
+    "react-async-hook": "^4.0.0",
+    "react-dom": "^19.1.1"
+  }
+}
