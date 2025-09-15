@@ -14,13 +14,12 @@ export default function Orbital({
     >
       <h2>{name.replace(/[()]/g, '')}</h2>
       <p>
-        Potentially hazardous?{' '}
-        <Hazard yes={is_potentially_hazardous_asteroid} />
+        潜在危险？ <Hazard yes={is_potentially_hazardous_asteroid} />
       </p>
       <Passing data={close_approach_data} />
       <p className="more">
         <a href={nasa_jpl_url} target="_blank">
-          Find out more
+          了解更多
         </a>
       </p>
     </div>

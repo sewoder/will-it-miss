@@ -1688,6 +1688,8 @@ var _format = require("date-fns/format");
 var _formatDefault = parcelHelpers.interopDefault(_format);
 var _orbital = require("./Orbital");
 var _orbitalDefault = parcelHelpers.interopDefault(_orbital);
+var _zhCN = require("date-fns/locale/zh-CN");
+var _zhCNDefault = parcelHelpers.interopDefault(_zhCN);
 var _s = $RefreshSig$();
 function getDate(d = new Date()) {
     return d.toJSON().split('T')[0];
@@ -1697,59 +1699,84 @@ function App() {
     _s();
     const data = (0, _reactAsyncHook.useAsync)(fetchData, []);
     if (data.loading) {
-        document.title = "Counting potential earth HAZARDS\u2026";
+        document.title = "\u8BA1\u7B97\u6F5C\u5728\u7684\u5730\u7403\u5371\u9669\u2026";
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-            children: "Getting data from NASA right now to check whether something from space is going to hit us. One moment\u2026"
+            children: "\u6B63\u5728\u4ECE NASA \u83B7\u53D6\u6570\u636E\uFF0C\u4EE5\u68C0\u67E5\u662F\u5426\u6709\u6765\u81EA\u592A\u7A7A\u7684\u7269\u4F53\u5C06\u8981\u649E\u51FB\u6211\u4EEC\u3002\u8BF7\u7A0D\u7B49\u2026"
         }, void 0, false, {
             fileName: "src/components/App.js",
-            lineNumber: 23,
+            lineNumber: 24,
             columnNumber: 7
         }, this);
     }
     const day = getDate((0, _addDaysDefault.default)(new Date(), 1));
+    // 加入数据有效性判断，防止报错，频繁访问该API时可能会遇到这种情况
+    const dayObjects = data.result?.near_earth_objects?.[day];
+    if (!dayObjects) {
+        document.title = "\u65E0\u6CD5\u83B7\u53D6\u6570\u636E \uD83D\uDE22";
+        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                children: [
+                    "NASA \u6CA1\u6709\u8FD4\u56DE ",
+                    day,
+                    " \u7684\u8FD1\u5730\u5929\u4F53\u6570\u636E\uFF0C\u53EF\u80FD\u662F API \u9650\u5236\u6216\u6570\u636E\u5C1A\u672A\u66F4\u65B0\u3002"
+                ]
+            }, void 0, true, {
+                fileName: "src/components/App.js",
+                lineNumber: 37,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "src/components/App.js",
+            lineNumber: 36,
+            columnNumber: 7
+        }, this);
+    }
+    // 若数据正常，则继续执行后续操作
     const hazards = data.result.near_earth_objects[day].reduce((acc, curr)=>{
         if (curr.is_potentially_hazardous_asteroid) return acc + 1;
         return acc;
     }, 0);
-    document.title = `${hazards} potential HAZARDS ${hazards > 0 ? "\uD83D\uDE31" : "\uD83D\uDC4D"}`;
+    document.title = `${hazards} \u{6F5C}\u{5728}\u{5371}\u{9669} ${hazards > 0 ? "\uD83D\uDE31" : "\uD83D\uDC4D"}`;
     const results = data.result.near_earth_objects[day];
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
                 children: [
-                    (0, _formatDefault.default)((0, _addDaysDefault.default)(new Date(), 1), 'EEEE d-MMM'),
-                    " there will be",
+                    (0, _formatDefault.default)((0, _addDaysDefault.default)(new Date(), 1), 'EEEE d-MMM', {
+                        locale: (0, _zhCNDefault.default)
+                    }),
+                    " \u5C06\u4F1A\u6709",
                     ' ',
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
                         children: results.length
                     }, void 0, false, {
                         fileName: "src/components/App.js",
-                        lineNumber: 45,
+                        lineNumber: 58,
                         columnNumber: 9
                     }, this),
-                    " flying pigs"
+                    " \u4E2A\u8FD1\u5730\u5929\u4F53\u7ECF\u8FC7\u5730\u7403\u8F68\u9053"
                 ]
             }, void 0, true, {
                 fileName: "src/components/App.js",
-                lineNumber: 43,
+                lineNumber: 56,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("hr", {}, void 0, false, {
                 fileName: "src/components/App.js",
-                lineNumber: 47,
+                lineNumber: 60,
                 columnNumber: 7
             }, this),
             results.sort((a)=>a.is_potentially_hazardous_asteroid ? -1 : 1).map((data)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _orbitalDefault.default), {
                     ...data
                 }, data.id, false, {
                     fileName: "src/components/App.js",
-                    lineNumber: 51,
+                    lineNumber: 64,
                     columnNumber: 11
                 }, this))
         ]
     }, void 0, true, {
         fileName: "src/components/App.js",
-        lineNumber: 42,
+        lineNumber: 55,
         columnNumber: 5
     }, this);
 }
@@ -1767,7 +1794,7 @@ $RefreshReg$(_c, "App");
   globalThis.$RefreshReg$ = prevRefreshReg;
   globalThis.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"dVPUn","react":"jMk1U","react-async-hook":"korXj","date-fns/addDays":"klfv9","date-fns/format":"hQsFo","./Orbital":"eD215","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi"}],"korXj":[function(require,module,exports,__globalThis) {
+},{"react/jsx-dev-runtime":"dVPUn","react":"jMk1U","react-async-hook":"korXj","date-fns/addDays":"klfv9","date-fns/format":"hQsFo","./Orbital":"eD215","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi","date-fns/locale/zh-CN":"kutte"}],"korXj":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "useAsync", ()=>useAsync);
@@ -4900,14 +4927,13 @@ function Orbital({ name, is_potentially_hazardous_asteroid, close_approach_data,
             }, this),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
                 children: [
-                    "Potentially hazardous?",
-                    ' ',
+                    "\u6F5C\u5728\u5371\u9669\uFF1F ",
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _hazardDefault.default), {
                         yes: is_potentially_hazardous_asteroid
                     }, void 0, false, {
                         fileName: "src/components/Orbital.js",
-                        lineNumber: 18,
-                        columnNumber: 9
+                        lineNumber: 17,
+                        columnNumber: 15
                     }, this)
                 ]
             }, void 0, true, {
@@ -4919,7 +4945,7 @@ function Orbital({ name, is_potentially_hazardous_asteroid, close_approach_data,
                 data: close_approach_data
             }, void 0, false, {
                 fileName: "src/components/Orbital.js",
-                lineNumber: 20,
+                lineNumber: 19,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -4927,15 +4953,15 @@ function Orbital({ name, is_potentially_hazardous_asteroid, close_approach_data,
                 children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("a", {
                     href: nasa_jpl_url,
                     target: "_blank",
-                    children: "Find out more"
+                    children: "\u4E86\u89E3\u66F4\u591A"
                 }, void 0, false, {
                     fileName: "src/components/Orbital.js",
-                    lineNumber: 22,
+                    lineNumber: 21,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "src/components/Orbital.js",
-                lineNumber: 21,
+                lineNumber: 20,
                 columnNumber: 7
             }, this)
         ]
@@ -4971,11 +4997,11 @@ var _reactDefault = parcelHelpers.interopDefault(_react);
 const YesNo = new Map([
     [
         true,
-        "YES \uD83D\uDE31"
+        "\u662F \uD83D\uDE31"
     ],
     [
         false,
-        'nope'
+        "\u5426"
     ]
 ]);
 function Hazard({ yes }) {
@@ -7512,7 +7538,585 @@ function round(number, places) {
     return number;
 }
 
-},{}],"hrvwu":[function(require,module,exports,__globalThis) {
+},{}],"kutte":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "zhCN", ()=>zhCN);
+var _formatDistanceJs = require("./zh-CN/_lib/formatDistance.js");
+var _formatLongJs = require("./zh-CN/_lib/formatLong.js");
+var _formatRelativeJs = require("./zh-CN/_lib/formatRelative.js");
+var _localizeJs = require("./zh-CN/_lib/localize.js");
+var _matchJs = require("./zh-CN/_lib/match.js");
+const zhCN = {
+    code: "zh-CN",
+    formatDistance: (0, _formatDistanceJs.formatDistance),
+    formatLong: (0, _formatLongJs.formatLong),
+    formatRelative: (0, _formatRelativeJs.formatRelative),
+    localize: (0, _localizeJs.localize),
+    match: (0, _matchJs.match),
+    options: {
+        weekStartsOn: 1 /* Monday */ ,
+        firstWeekContainsDate: 4
+    }
+};
+// Fallback for modularized imports:
+exports.default = zhCN;
+
+},{"./zh-CN/_lib/formatDistance.js":"5Om10","./zh-CN/_lib/formatLong.js":"8fzgJ","./zh-CN/_lib/formatRelative.js":"aA4ms","./zh-CN/_lib/localize.js":"dxvu1","./zh-CN/_lib/match.js":"3Czcw","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5Om10":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "formatDistance", ()=>formatDistance);
+const formatDistanceLocale = {
+    lessThanXSeconds: {
+        one: "\u4E0D\u5230 1 \u79D2",
+        other: "\u4E0D\u5230 {{count}} \u79D2"
+    },
+    xSeconds: {
+        one: "1 \u79D2",
+        other: "{{count}} \u79D2"
+    },
+    halfAMinute: "\u534A\u5206\u949F",
+    lessThanXMinutes: {
+        one: "\u4E0D\u5230 1 \u5206\u949F",
+        other: "\u4E0D\u5230 {{count}} \u5206\u949F"
+    },
+    xMinutes: {
+        one: "1 \u5206\u949F",
+        other: "{{count}} \u5206\u949F"
+    },
+    xHours: {
+        one: "1 \u5C0F\u65F6",
+        other: "{{count}} \u5C0F\u65F6"
+    },
+    aboutXHours: {
+        one: "\u5927\u7EA6 1 \u5C0F\u65F6",
+        other: "\u5927\u7EA6 {{count}} \u5C0F\u65F6"
+    },
+    xDays: {
+        one: "1 \u5929",
+        other: "{{count}} \u5929"
+    },
+    aboutXWeeks: {
+        one: "\u5927\u7EA6 1 \u4E2A\u661F\u671F",
+        other: "\u5927\u7EA6 {{count}} \u4E2A\u661F\u671F"
+    },
+    xWeeks: {
+        one: "1 \u4E2A\u661F\u671F",
+        other: "{{count}} \u4E2A\u661F\u671F"
+    },
+    aboutXMonths: {
+        one: "\u5927\u7EA6 1 \u4E2A\u6708",
+        other: "\u5927\u7EA6 {{count}} \u4E2A\u6708"
+    },
+    xMonths: {
+        one: "1 \u4E2A\u6708",
+        other: "{{count}} \u4E2A\u6708"
+    },
+    aboutXYears: {
+        one: "\u5927\u7EA6 1 \u5E74",
+        other: "\u5927\u7EA6 {{count}} \u5E74"
+    },
+    xYears: {
+        one: "1 \u5E74",
+        other: "{{count}} \u5E74"
+    },
+    overXYears: {
+        one: "\u8D85\u8FC7 1 \u5E74",
+        other: "\u8D85\u8FC7 {{count}} \u5E74"
+    },
+    almostXYears: {
+        one: "\u5C06\u8FD1 1 \u5E74",
+        other: "\u5C06\u8FD1 {{count}} \u5E74"
+    }
+};
+const formatDistance = (token, count, options)=>{
+    let result;
+    const tokenValue = formatDistanceLocale[token];
+    if (typeof tokenValue === "string") result = tokenValue;
+    else if (count === 1) result = tokenValue.one;
+    else result = tokenValue.other.replace("{{count}}", String(count));
+    if (options?.addSuffix) {
+        if (options.comparison && options.comparison > 0) return result + "\u5185";
+        else return result + "\u524D";
+    }
+    return result;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8fzgJ":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "formatLong", ()=>formatLong);
+var _buildFormatLongFnJs = require("../../_lib/buildFormatLongFn.js");
+const dateFormats = {
+    full: "y'\u5E74'M'\u6708'd'\u65E5' EEEE",
+    long: "y'\u5E74'M'\u6708'd'\u65E5'",
+    medium: "yyyy-MM-dd",
+    short: "yy-MM-dd"
+};
+const timeFormats = {
+    full: "zzzz a h:mm:ss",
+    long: "z a h:mm:ss",
+    medium: "a h:mm:ss",
+    short: "a h:mm"
+};
+const dateTimeFormats = {
+    full: "{{date}} {{time}}",
+    long: "{{date}} {{time}}",
+    medium: "{{date}} {{time}}",
+    short: "{{date}} {{time}}"
+};
+const formatLong = {
+    date: (0, _buildFormatLongFnJs.buildFormatLongFn)({
+        formats: dateFormats,
+        defaultWidth: "full"
+    }),
+    time: (0, _buildFormatLongFnJs.buildFormatLongFn)({
+        formats: timeFormats,
+        defaultWidth: "full"
+    }),
+    dateTime: (0, _buildFormatLongFnJs.buildFormatLongFn)({
+        formats: dateTimeFormats,
+        defaultWidth: "full"
+    })
+};
+
+},{"../../_lib/buildFormatLongFn.js":"hG1eR","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"aA4ms":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "formatRelative", ()=>formatRelative);
+var _isSameWeekJs = require("../../../isSameWeek.js");
+function checkWeek(date, baseDate, options) {
+    const baseFormat = "eeee p";
+    if ((0, _isSameWeekJs.isSameWeek)(date, baseDate, options)) return baseFormat; // in same week
+    else if (date.getTime() > baseDate.getTime()) return "'\u4E0B\u4E2A'" + baseFormat; // in next week
+    return "'\u4E0A\u4E2A'" + baseFormat; // in last week
+}
+const formatRelativeLocale = {
+    lastWeek: checkWeek,
+    yesterday: "'\u6628\u5929' p",
+    today: "'\u4ECA\u5929' p",
+    tomorrow: "'\u660E\u5929' p",
+    nextWeek: checkWeek,
+    other: "PP p"
+};
+const formatRelative = (token, date, baseDate, options)=>{
+    const format = formatRelativeLocale[token];
+    if (typeof format === "function") return format(date, baseDate, options);
+    return format;
+};
+
+},{"../../../isSameWeek.js":"eEzbl","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"eEzbl":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * The {@link isSameWeek} function options.
+ */ /**
+ * @name isSameWeek
+ * @category Week Helpers
+ * @summary Are the given dates in the same week (and month and year)?
+ *
+ * @description
+ * Are the given dates in the same week (and month and year)?
+ *
+ * @param laterDate - The first date to check
+ * @param earlierDate - The second date to check
+ * @param options - An object with options
+ *
+ * @returns The dates are in the same week (and month and year)
+ *
+ * @example
+ * // Are 31 August 2014 and 4 September 2014 in the same week?
+ * const result = isSameWeek(new Date(2014, 7, 31), new Date(2014, 8, 4))
+ * //=> true
+ *
+ * @example
+ * // If week starts with Monday,
+ * // are 31 August 2014 and 4 September 2014 in the same week?
+ * const result = isSameWeek(new Date(2014, 7, 31), new Date(2014, 8, 4), {
+ *   weekStartsOn: 1
+ * })
+ * //=> false
+ *
+ * @example
+ * // Are 1 January 2014 and 1 January 2015 in the same week?
+ * const result = isSameWeek(new Date(2014, 0, 1), new Date(2015, 0, 1))
+ * //=> false
+ */ parcelHelpers.export(exports, "isSameWeek", ()=>isSameWeek);
+var _normalizeDatesJs = require("./_lib/normalizeDates.js");
+var _startOfWeekJs = require("./startOfWeek.js");
+function isSameWeek(laterDate, earlierDate, options) {
+    const [laterDate_, earlierDate_] = (0, _normalizeDatesJs.normalizeDates)(options?.in, laterDate, earlierDate);
+    return +(0, _startOfWeekJs.startOfWeek)(laterDate_, options) === +(0, _startOfWeekJs.startOfWeek)(earlierDate_, options);
+}
+// Fallback for modularized imports:
+exports.default = isSameWeek;
+
+},{"./_lib/normalizeDates.js":"grsPk","./startOfWeek.js":"kSdOJ","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"dxvu1":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "localize", ()=>localize);
+var _buildLocalizeFnJs = require("../../_lib/buildLocalizeFn.js");
+const eraValues = {
+    narrow: [
+        "\u524D",
+        "\u516C\u5143"
+    ],
+    abbreviated: [
+        "\u524D",
+        "\u516C\u5143"
+    ],
+    wide: [
+        "\u516C\u5143\u524D",
+        "\u516C\u5143"
+    ]
+};
+const quarterValues = {
+    narrow: [
+        "1",
+        "2",
+        "3",
+        "4"
+    ],
+    abbreviated: [
+        "\u7B2C\u4E00\u5B63",
+        "\u7B2C\u4E8C\u5B63",
+        "\u7B2C\u4E09\u5B63",
+        "\u7B2C\u56DB\u5B63"
+    ],
+    wide: [
+        "\u7B2C\u4E00\u5B63\u5EA6",
+        "\u7B2C\u4E8C\u5B63\u5EA6",
+        "\u7B2C\u4E09\u5B63\u5EA6",
+        "\u7B2C\u56DB\u5B63\u5EA6"
+    ]
+};
+const monthValues = {
+    narrow: [
+        "\u4E00",
+        "\u4E8C",
+        "\u4E09",
+        "\u56DB",
+        "\u4E94",
+        "\u516D",
+        "\u4E03",
+        "\u516B",
+        "\u4E5D",
+        "\u5341",
+        "\u5341\u4E00",
+        "\u5341\u4E8C"
+    ],
+    abbreviated: [
+        "1\u6708",
+        "2\u6708",
+        "3\u6708",
+        "4\u6708",
+        "5\u6708",
+        "6\u6708",
+        "7\u6708",
+        "8\u6708",
+        "9\u6708",
+        "10\u6708",
+        "11\u6708",
+        "12\u6708"
+    ],
+    wide: [
+        "\u4E00\u6708",
+        "\u4E8C\u6708",
+        "\u4E09\u6708",
+        "\u56DB\u6708",
+        "\u4E94\u6708",
+        "\u516D\u6708",
+        "\u4E03\u6708",
+        "\u516B\u6708",
+        "\u4E5D\u6708",
+        "\u5341\u6708",
+        "\u5341\u4E00\u6708",
+        "\u5341\u4E8C\u6708"
+    ]
+};
+const dayValues = {
+    narrow: [
+        "\u65E5",
+        "\u4E00",
+        "\u4E8C",
+        "\u4E09",
+        "\u56DB",
+        "\u4E94",
+        "\u516D"
+    ],
+    short: [
+        "\u65E5",
+        "\u4E00",
+        "\u4E8C",
+        "\u4E09",
+        "\u56DB",
+        "\u4E94",
+        "\u516D"
+    ],
+    abbreviated: [
+        "\u5468\u65E5",
+        "\u5468\u4E00",
+        "\u5468\u4E8C",
+        "\u5468\u4E09",
+        "\u5468\u56DB",
+        "\u5468\u4E94",
+        "\u5468\u516D"
+    ],
+    wide: [
+        "\u661F\u671F\u65E5",
+        "\u661F\u671F\u4E00",
+        "\u661F\u671F\u4E8C",
+        "\u661F\u671F\u4E09",
+        "\u661F\u671F\u56DB",
+        "\u661F\u671F\u4E94",
+        "\u661F\u671F\u516D"
+    ]
+};
+const dayPeriodValues = {
+    narrow: {
+        am: "\u4E0A",
+        pm: "\u4E0B",
+        midnight: "\u51CC\u6668",
+        noon: "\u5348",
+        morning: "\u65E9",
+        afternoon: "\u4E0B\u5348",
+        evening: "\u665A",
+        night: "\u591C"
+    },
+    abbreviated: {
+        am: "\u4E0A\u5348",
+        pm: "\u4E0B\u5348",
+        midnight: "\u51CC\u6668",
+        noon: "\u4E2D\u5348",
+        morning: "\u65E9\u6668",
+        afternoon: "\u4E2D\u5348",
+        evening: "\u665A\u4E0A",
+        night: "\u591C\u95F4"
+    },
+    wide: {
+        am: "\u4E0A\u5348",
+        pm: "\u4E0B\u5348",
+        midnight: "\u51CC\u6668",
+        noon: "\u4E2D\u5348",
+        morning: "\u65E9\u6668",
+        afternoon: "\u4E2D\u5348",
+        evening: "\u665A\u4E0A",
+        night: "\u591C\u95F4"
+    }
+};
+const formattingDayPeriodValues = {
+    narrow: {
+        am: "\u4E0A",
+        pm: "\u4E0B",
+        midnight: "\u51CC\u6668",
+        noon: "\u5348",
+        morning: "\u65E9",
+        afternoon: "\u4E0B\u5348",
+        evening: "\u665A",
+        night: "\u591C"
+    },
+    abbreviated: {
+        am: "\u4E0A\u5348",
+        pm: "\u4E0B\u5348",
+        midnight: "\u51CC\u6668",
+        noon: "\u4E2D\u5348",
+        morning: "\u65E9\u6668",
+        afternoon: "\u4E2D\u5348",
+        evening: "\u665A\u4E0A",
+        night: "\u591C\u95F4"
+    },
+    wide: {
+        am: "\u4E0A\u5348",
+        pm: "\u4E0B\u5348",
+        midnight: "\u51CC\u6668",
+        noon: "\u4E2D\u5348",
+        morning: "\u65E9\u6668",
+        afternoon: "\u4E2D\u5348",
+        evening: "\u665A\u4E0A",
+        night: "\u591C\u95F4"
+    }
+};
+const ordinalNumber = (dirtyNumber, options)=>{
+    const number = Number(dirtyNumber);
+    switch(options?.unit){
+        case "date":
+            return number.toString() + "\u65E5";
+        case "hour":
+            return number.toString() + "\u65F6";
+        case "minute":
+            return number.toString() + "\u5206";
+        case "second":
+            return number.toString() + "\u79D2";
+        default:
+            return "\u7B2C " + number.toString();
+    }
+};
+const localize = {
+    ordinalNumber,
+    era: (0, _buildLocalizeFnJs.buildLocalizeFn)({
+        values: eraValues,
+        defaultWidth: "wide"
+    }),
+    quarter: (0, _buildLocalizeFnJs.buildLocalizeFn)({
+        values: quarterValues,
+        defaultWidth: "wide",
+        argumentCallback: (quarter)=>quarter - 1
+    }),
+    month: (0, _buildLocalizeFnJs.buildLocalizeFn)({
+        values: monthValues,
+        defaultWidth: "wide"
+    }),
+    day: (0, _buildLocalizeFnJs.buildLocalizeFn)({
+        values: dayValues,
+        defaultWidth: "wide"
+    }),
+    dayPeriod: (0, _buildLocalizeFnJs.buildLocalizeFn)({
+        values: dayPeriodValues,
+        defaultWidth: "wide",
+        formattingValues: formattingDayPeriodValues,
+        defaultFormattingWidth: "wide"
+    })
+};
+
+},{"../../_lib/buildLocalizeFn.js":"9AV3v","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"3Czcw":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "match", ()=>match);
+var _buildMatchFnJs = require("../../_lib/buildMatchFn.js");
+var _buildMatchPatternFnJs = require("../../_lib/buildMatchPatternFn.js");
+const matchOrdinalNumberPattern = /^(第\s*)?\d+(日|时|分|秒)?/i;
+const parseOrdinalNumberPattern = /\d+/i;
+const matchEraPatterns = {
+    narrow: /^(前)/i,
+    abbreviated: /^(前)/i,
+    wide: /^(公元前|公元)/i
+};
+const parseEraPatterns = {
+    any: [
+        /^(前)/i,
+        /^(公元)/i
+    ]
+};
+const matchQuarterPatterns = {
+    narrow: /^[1234]/i,
+    abbreviated: /^第[一二三四]刻/i,
+    wide: /^第[一二三四]刻钟/i
+};
+const parseQuarterPatterns = {
+    any: [
+        /(1|一)/i,
+        /(2|二)/i,
+        /(3|三)/i,
+        /(4|四)/i
+    ]
+};
+const matchMonthPatterns = {
+    narrow: /^(一|二|三|四|五|六|七|八|九|十[二一])/i,
+    abbreviated: /^(一|二|三|四|五|六|七|八|九|十[二一]|\d|1[12])月/i,
+    wide: /^(一|二|三|四|五|六|七|八|九|十[二一])月/i
+};
+const parseMonthPatterns = {
+    narrow: [
+        /^一/i,
+        /^二/i,
+        /^三/i,
+        /^四/i,
+        /^五/i,
+        /^六/i,
+        /^七/i,
+        /^八/i,
+        /^九/i,
+        /^十(?!(一|二))/i,
+        /^十一/i,
+        /^十二/i
+    ],
+    any: [
+        /^一|1/i,
+        /^二|2/i,
+        /^三|3/i,
+        /^四|4/i,
+        /^五|5/i,
+        /^六|6/i,
+        /^七|7/i,
+        /^八|8/i,
+        /^九|9/i,
+        /^十(?!(一|二))|10/i,
+        /^十一|11/i,
+        /^十二|12/i
+    ]
+};
+const matchDayPatterns = {
+    narrow: /^[一二三四五六日]/i,
+    short: /^[一二三四五六日]/i,
+    abbreviated: /^周[一二三四五六日]/i,
+    wide: /^星期[一二三四五六日]/i
+};
+const parseDayPatterns = {
+    any: [
+        /日/i,
+        /一/i,
+        /二/i,
+        /三/i,
+        /四/i,
+        /五/i,
+        /六/i
+    ]
+};
+const matchDayPeriodPatterns = {
+    any: /^(上午?|下午?|午夜|[中正]午|早上?|下午|晚上?|凌晨|)/i
+};
+const parseDayPeriodPatterns = {
+    any: {
+        am: /^上午?/i,
+        pm: /^下午?/i,
+        midnight: /^午夜/i,
+        noon: /^[中正]午/i,
+        morning: /^早上/i,
+        afternoon: /^下午/i,
+        evening: /^晚上?/i,
+        night: /^凌晨/i
+    }
+};
+const match = {
+    ordinalNumber: (0, _buildMatchPatternFnJs.buildMatchPatternFn)({
+        matchPattern: matchOrdinalNumberPattern,
+        parsePattern: parseOrdinalNumberPattern,
+        valueCallback: (value)=>parseInt(value, 10)
+    }),
+    era: (0, _buildMatchFnJs.buildMatchFn)({
+        matchPatterns: matchEraPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseEraPatterns,
+        defaultParseWidth: "any"
+    }),
+    quarter: (0, _buildMatchFnJs.buildMatchFn)({
+        matchPatterns: matchQuarterPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseQuarterPatterns,
+        defaultParseWidth: "any",
+        valueCallback: (index)=>index + 1
+    }),
+    month: (0, _buildMatchFnJs.buildMatchFn)({
+        matchPatterns: matchMonthPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseMonthPatterns,
+        defaultParseWidth: "any"
+    }),
+    day: (0, _buildMatchFnJs.buildMatchFn)({
+        matchPatterns: matchDayPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseDayPatterns,
+        defaultParseWidth: "any"
+    }),
+    dayPeriod: (0, _buildMatchFnJs.buildMatchFn)({
+        matchPatterns: matchDayPeriodPatterns,
+        defaultMatchWidth: "any",
+        parsePatterns: parseDayPeriodPatterns,
+        defaultParseWidth: "any"
+    })
+};
+
+},{"../../_lib/buildMatchFn.js":"1TSj7","../../_lib/buildMatchPatternFn.js":"YWS9x","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"hrvwu":[function(require,module,exports,__globalThis) {
 'use strict';
 function checkDCE() {
     /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */ if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined' || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== 'function') return;
